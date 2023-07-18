@@ -19,20 +19,24 @@ func main() {
 	// create the handlers
 	// **this is just for example, but you can inject the handler directly into the ServeMux.Handle()
 	hh := handlers.NewHello(l)
+	ph := handlers.NewProducts(l)
 
 	// registering the handlers on the serve mux (sm)
 	sm := http.NewServeMux()
 	sm.Handle("/", hh)
 	// **example of registering a route to the serve mux by passing the http.Handler in directly
 	sm.Handle("/goodbye", handlers.NewGoodbye(l))
+	sm.Handle("/products", ph)
+	sm.Handle("/products/", ph)
 
 	// create a new server
 	s := http.Server{
 		Addr:         ":8080",           // configure the bind address
 		Handler:      sm,                // set the default handler
 		IdleTimeout:  120 * time.Second, // max duration to wait for the next request when keep-alives are enabled
-		ReadTimeout:  1 * time.Second,   // max duration for reading the request
-		WriteTimeout: 1 * time.Second,   // max duration before returning the request
+		ReadTimeout:  5 * time.Second,   // max duration for reading the request
+		WriteTimeout: 10 * time.Second,  // max duration before returning the request
+		ErrorLog:     l,                 // set the logger for the server
 	}
 
 	// this go function starts the server
