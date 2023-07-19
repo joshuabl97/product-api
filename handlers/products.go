@@ -3,7 +3,6 @@ package handlers
 import (
 	"log"
 	"net/http"
-	"regexp"
 	"strconv"
 
 	"github.com/gorilla/mux"
@@ -18,56 +17,6 @@ type Products struct {
 // NewProducts creates a products handler with the given logger
 func NewProducts(l *log.Logger) *Products {
 	return &Products{l}
-}
-
-// ServeHTTP is the main entry point for the handler and staisfies the http.Handler
-// interface
-func (p *Products) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
-	// handle the request for a list of products
-	if r.Method == http.MethodGet {
-		p.GetProducts(rw, r)
-		return
-	}
-
-	if r.Method == http.MethodPost {
-		p.AddProduct(rw, r)
-		return
-	}
-
-	if r.Method == http.MethodPut {
-		p.l.Println("PUT", r.URL.Path)
-		// expect the id in the URI
-		reg := regexp.MustCompile(`/products/([0-9]+)`)
-		g := reg.FindAllStringSubmatch(r.URL.Path, -1)
-
-		if len(g) != 1 {
-			p.l.Println("Invalid URI (more than one id)")
-			http.Error(rw, "Invalid URI", http.StatusBadRequest)
-			return
-		}
-
-		if len(g[0]) != 2 {
-			p.l.Println("Invalid URI")
-			http.Error(rw, "Invalid URI", http.StatusBadRequest)
-			return
-		}
-
-		idString := g[0][1]
-		id, err := strconv.Atoi(idString)
-		if err != nil {
-			p.l.Println("Invalid URI (unable to convert id (type string) to int)")
-			http.Error(rw, "Invalid URI", http.StatusBadRequest)
-			return
-		}
-
-		p.l.Println("got id", id)
-		p.UpdateProducts(rw, r)
-		return
-	}
-
-	// catch all
-	// if no method is satisfied return an error
-	rw.WriteHeader(http.StatusMethodNotAllowed)
 }
 
 // getProducts returns the products from the data store
