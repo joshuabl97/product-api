@@ -18,15 +18,10 @@ func main() {
 	l := log.New(os.Stdout, "product-api", log.LstdFlags)
 
 	// create the handlers
-	// **this is just for example, but you can inject the handler directly into the ServeMux.Handle()
-	hh := handlers.NewHello(l)
 	ph := handlers.NewProducts(l)
 
 	// registering the handlers on the serve mux (sm)
 	sm := mux.NewRouter()
-	sm.Handle("/", hh)
-	// **example of registering a route to the serve mux by passing the http.Handler in directly
-	sm.Handle("/goodbye", handlers.NewGoodbye(l))
 
 	get := sm.Methods("GET").Subrouter()
 	get.HandleFunc("/products", ph.GetProducts)
