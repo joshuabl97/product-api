@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"strconv"
@@ -42,24 +43,23 @@ func (p *Products) AddProduct(rw http.ResponseWriter, r *http.Request) {
 		http.Error(rw, "Unable to decode json", http.StatusBadRequest)
 	}
 
+	// prod := r.Context().Value(KeyProduct{}).(*data.Product)
+
 	p.l.Printf("Prod: %#v\n", prod)
 	data.AddProduct(prod)
+	// data.AddProduct(&prod)
 }
 
 func (p *Products) UpdateProducts(rw http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	idString := vars["id"]
-	id, err := strconv.Atoi(idString)
+	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
 		http.Error(rw, "Invalid URI", http.StatusBadRequest)
 	}
-	p.l.Println("Handle PUT Products ", id)
 
-	prod := &data.Product{}
-	err = prod.FromJSON(r.Body)
-	if err != nil {
-		http.Error(rw, "Unable to decode json", http.StatusBadRequest)
-	}
+	p.l.Println("Handle PUT Products - id: ", id)
+
+	prod := r.Context().Value(KeyProduct{}).(*data.Product)
 
 	err = data.UpdateProduct(id, prod)
 	if err != nil {
@@ -67,4 +67,21 @@ func (p *Products) UpdateProducts(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+}
+
+type KeyProduct struct{}
+
+func (p *Products) MiddlewareProductValidation(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+		prod := &data.Product{}
+		err := prod.FromJSON(r.Body)
+		if err != nil {
+			http.Error(rw, "Unable to decode json", http.StatusBadRequest)
+		}
+
+		ctx := context.WithValue(r.Context(), KeyProduct{}, prod)
+		req := r.WithContext(ctx)
+
+		next.ServeHTTP(rw, req)
+	})
 }

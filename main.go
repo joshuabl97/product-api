@@ -28,6 +28,8 @@ func main() {
 
 	put := sm.Methods("PUT").Subrouter()
 	put.HandleFunc("/products/{id:[0-9]+}", ph.UpdateProducts)
+	// the handler func (ph.UpdateProducts) will only be envoked if the middleware passes
+	put.Use(ph.MiddlewareProductValidation)
 
 	post := sm.Methods("POST").Subrouter()
 	post.HandleFunc("/products", ph.AddProduct)
