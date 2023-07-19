@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"time"
 
+	"github.com/gorilla/mux"
 	"github.com/joshuabl97/product-api/handlers"
 )
 
@@ -17,17 +18,21 @@ func main() {
 	l := log.New(os.Stdout, "product-api", log.LstdFlags)
 
 	// create the handlers
-	// **this is just for example, but you can inject the handler directly into the ServeMux.Handle()
-	hh := handlers.NewHello(l)
 	ph := handlers.NewProducts(l)
 
 	// registering the handlers on the serve mux (sm)
-	sm := http.NewServeMux()
-	sm.Handle("/", hh)
-	// **example of registering a route to the serve mux by passing the http.Handler in directly
-	sm.Handle("/goodbye", handlers.NewGoodbye(l))
-	sm.Handle("/products", ph)
-	sm.Handle("/products/", ph)
+	sm := mux.NewRouter()
+
+	get := sm.Methods("GET").Subrouter()
+	get.HandleFunc("/products", ph.GetProducts)
+
+	put := sm.Methods("PUT").Subrouter()
+	put.HandleFunc("/products/{id:[0-9]+}", ph.UpdateProducts)
+	// the handler func (ph.UpdateProducts) will only be envoked if the middleware passes
+	put.Use(ph.MiddlewareProductValidation)
+
+	post := sm.Methods("POST").Subrouter()
+	post.HandleFunc("/products", ph.AddProduct)
 
 	// create a new server
 	s := http.Server{
