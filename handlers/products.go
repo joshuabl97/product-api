@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"strconv"
 
+	"github.com/gorilla/mux"
 	"github.com/joshuabl97/product-api/data"
 )
 
@@ -24,12 +25,12 @@ func NewProducts(l *log.Logger) *Products {
 func (p *Products) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	// handle the request for a list of products
 	if r.Method == http.MethodGet {
-		p.getProducts(rw, r)
+		p.GetProducts(rw, r)
 		return
 	}
 
 	if r.Method == http.MethodPost {
-		p.addProduct(rw, r)
+		p.AddProduct(rw, r)
 		return
 	}
 
@@ -60,7 +61,7 @@ func (p *Products) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		}
 
 		p.l.Println("got id", id)
-		p.updateProducts(id, rw, r)
+		p.UpdateProducts(rw, r)
 		return
 	}
 
@@ -70,7 +71,7 @@ func (p *Products) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 }
 
 // getProducts returns the products from the data store
-func (p *Products) getProducts(rw http.ResponseWriter, r *http.Request) {
+func (p *Products) GetProducts(rw http.ResponseWriter, r *http.Request) {
 	p.l.Println("Handle GET Products")
 
 	// fetch the products from the datastore
@@ -83,7 +84,7 @@ func (p *Products) getProducts(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (p *Products) addProduct(rw http.ResponseWriter, r *http.Request) {
+func (p *Products) AddProduct(rw http.ResponseWriter, r *http.Request) {
 	p.l.Println("Handle POST Products")
 
 	prod := &data.Product{}
@@ -96,11 +97,17 @@ func (p *Products) addProduct(rw http.ResponseWriter, r *http.Request) {
 	data.AddProduct(prod)
 }
 
-func (p *Products) updateProducts(id int, rw http.ResponseWriter, r *http.Request) {
-	p.l.Print("Handle PUT Products")
+func (p *Products) UpdateProducts(rw http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	idString := vars["id"]
+	id, err := strconv.Atoi(idString)
+	if err != nil {
+		http.Error(rw, "Invalid URI", http.StatusBadRequest)
+	}
+	p.l.Println("Handle PUT Products ", id)
 
 	prod := &data.Product{}
-	err := prod.FromJSON(r.Body)
+	err = prod.FromJSON(r.Body)
 	if err != nil {
 		http.Error(rw, "Unable to decode json", http.StatusBadRequest)
 	}
