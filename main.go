@@ -33,7 +33,7 @@ func main() {
 
 	post := sm.Methods("POST").Subrouter()
 	post.HandleFunc("/products", ph.AddProduct)
-
+	post.Use(ph.MiddlewareProductValidation)
 	// create a new server
 	s := http.Server{
 		Addr:         ":8080",           // configure the bind address
