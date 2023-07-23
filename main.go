@@ -21,8 +21,9 @@ func main() {
 	loc, err := time.LoadLocation("Etc/Greenwich")
 	if err != nil {
 		l.Error().Msg("Couldn't determine timezone, using local machine time")
+	} else {
+		time.Local = loc
 	}
-	time.Local = loc
 
 	l = l.Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.RFC3339})
 
