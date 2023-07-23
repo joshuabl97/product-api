@@ -8,7 +8,7 @@ import (
 
 // getProducts returns the products from the data store
 func (p *Products) GetProducts(rw http.ResponseWriter, r *http.Request) {
-	p.l.Println("Handle GET Products")
+	p.l.Info().Msg("Handle GET Products")
 
 	// fetch the products from the datastore
 	lp := data.GetProducts()

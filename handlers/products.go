@@ -1,16 +1,16 @@
 package handlers
 
 import (
-	"log"
+	"github.com/rs/zerolog"
 )
 
 // Products is a http.Handler
 type Products struct {
-	l *log.Logger
+	l *zerolog.Logger
 }
 
 // NewProducts creates a products handler with the given logger
-func NewProducts(l *log.Logger) *Products {
+func NewProducts(l *zerolog.Logger) *Products {
 	return &Products{l}
 }
 

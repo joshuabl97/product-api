@@ -10,15 +10,20 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/joshuabl97/product-api/handlers"
+	"github.com/rs/zerolog"
 )
 
 func main() {
 
 	// instantiate logger
-	l := log.New(os.Stdout, "product-api", log.LstdFlags)
+	l := zerolog.New(os.Stderr).With().Timestamp().Logger()
+	l = l.Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.RFC3339})
+
+	// Create a custom logger that wraps the zerolog logger and implements http.Logger interface.
+	errorLog := &zerologLogger{l}
 
 	// create the handlers
-	ph := handlers.NewProducts(l)
+	ph := handlers.NewProducts(&l)
 
 	// registering the handlers on the serve mux (sm)
 	sm := mux.NewRouter()
@@ -34,14 +39,15 @@ func main() {
 	post := sm.Methods("POST").Subrouter()
 	post.HandleFunc("/products", ph.AddProduct)
 	post.Use(ph.MiddlewareProductValidation)
+
 	// create a new server
 	s := http.Server{
-		Addr:         ":8080",           // configure the bind address
-		Handler:      sm,                // set the default handler
-		IdleTimeout:  120 * time.Second, // max duration to wait for the next request when keep-alives are enabled
-		ReadTimeout:  5 * time.Second,   // max duration for reading the request
-		WriteTimeout: 10 * time.Second,  // max duration before returning the request
-		ErrorLog:     l,                 // set the logger for the server
+		Addr:         ":8080",                  // configure the bind address
+		Handler:      sm,                       // set the default handler
+		IdleTimeout:  120 * time.Second,        // max duration to wait for the next request when keep-alives are enabled
+		ReadTimeout:  5 * time.Second,          // max duration for reading the request
+		WriteTimeout: 10 * time.Second,         // max duration before returning the request
+		ErrorLog:     log.New(errorLog, "", 0), // set the logger for the server
 	}
 
 	// this go function starts the server
@@ -51,24 +57,34 @@ func main() {
 	go func() {
 		err := s.ListenAndServe()
 		if err != nil {
-			l.Fatal(err)
+			l.Fatal().Err(err)
 		}
 	}()
 
 	// sending kill and interrupt signals to os.Signal channel
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, os.Interrupt)
-	signal.Notify(sigChan, os.Kill)
 
 	// does not envoke 'graceful shutdown' unless the signalChannel is closed
-	sig := <-sigChan
+	<-sigChan
 
-	l.Println("Received terminate, graceful shutdown", sig)
+	l.Info().Msg("Received terminate, graceful shutdown")
 
 	// this timeoutContext allows the server 30 seconds to complete all requests (if any) before shutting down
 	timeoutCtx, _ := context.WithTimeout(context.Background(), 30*time.Second)
 	err := s.Shutdown(timeoutCtx)
 	if err != nil {
-		log.Fatal("We wanted to shut down anyway")
+		l.Fatal().Msg("We wanted to shut down anyway")
 	}
+}
+
+// Custom logger type that wraps zerolog.Logger and implements the http.Logger interface.
+type zerologLogger struct {
+	logger zerolog.Logger
+}
+
+// Implement the io.Writer interface for our custom logger.
+func (l *zerologLogger) Write(p []byte) (n int, err error) {
+	l.logger.Error().Msg(string(p))
+	return len(p), nil
 }

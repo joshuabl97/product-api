@@ -13,14 +13,23 @@ func (p *Products) MiddlewareProductValidation(next http.Handler) http.Handler {
 		prod := &data.Product{}
 		err := prod.FromJSON(r.Body)
 		if err != nil {
-			p.l.Println("[ERROR] decoding json: ", err)
-			http.Error(rw, "Unable to decode json", http.StatusBadRequest)
+			p.l.Error().
+				Err(err).
+				Msg("Unable to decode JSON")
+
+			http.Error(
+				rw,
+				"Unable to decode json",
+				http.StatusBadRequest)
 		}
 
 		// validate the product
 		err = prod.Validate()
 		if err != nil {
-			p.l.Println("[ERROR] validating product: ", err)
+			p.l.Error().
+				Err(err).
+				Msg("Unable to validate product")
+
 			http.Error(
 				rw,
 				fmt.Sprintf("Error validitating product: %s\n", err),

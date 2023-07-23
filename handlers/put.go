@@ -17,7 +17,7 @@ func (p *Products) UpdateProducts(rw http.ResponseWriter, r *http.Request) {
 		http.Error(rw, "Invalid URI", http.StatusBadRequest)
 	}
 
-	p.l.Println("Handle PUT Products - id: ", id)
+	p.l.Info().Str("id", string(id)).Msg("Handle PUT Products")
 
 	prod := r.Context().Value(KeyProduct{}).(*data.Product)
 
