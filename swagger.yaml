@@ -1,0 +1,17 @@
+basePath: /products
+consumes:
+    - application/json
+host: localhost
+info:
+    description: |-
+        the purpose of this application is to provide an application
+        that is using plain go code to define an API
+    termsOfService: there are no TOS at this moment, use at your own risk, I take no responsibility
+    title: Products API
+    version: 0.0.1
+paths: {}
+produces:
+    - application/json
+schemes:
+    - http
+swagger: "2.0"
