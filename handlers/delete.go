@@ -8,15 +8,14 @@ import (
 	"github.com/joshuabl97/product-api/data"
 )
 
-func (p *Products) DeleteProducts(rw http.ResponseWriter, r *http.Request) {
+func (p *Products) DeleteProduct(rw http.ResponseWriter, r *http.Request) {
+	p.l.Info().Str("id", mux.Vars(r)["id"]).Msg("Handle DELETE Products")
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
 		http.Error(rw, "Invalid URI", http.StatusBadRequest)
 		return
 	}
-
-	p.l.Info().Str("id", string(id)).Msg("Handle DELETE Products")
 
 	if err := data.DeleteProduct(id); err != nil {
 		p.l.Error().

@@ -48,7 +48,7 @@ func AddProduct(p *Product) {
 }
 
 func UpdateProduct(id int, p *Product) error {
-	_, position, err := findProduct(id)
+	_, position, err := FindProduct(id)
 	if err != nil {
 		return err
 	}
@@ -60,7 +60,7 @@ func UpdateProduct(id int, p *Product) error {
 }
 
 func DeleteProduct(id int) error {
-	_, index, err := findProduct(id)
+	_, index, err := FindProduct(id)
 	if err != nil {
 		return err
 	}
@@ -69,7 +69,7 @@ func DeleteProduct(id int) error {
 	return nil
 }
 
-func findProduct(id int) (*Product, int, error) {
+func FindProduct(id int) (*Product, int, error) {
 	for i, p := range productList {
 		if p.ID == id {
 			return p, i, nil
@@ -93,7 +93,12 @@ type Products []*Product
 // this reduces allocations and the overheads of the service
 //
 // https://golang.org/pkg/encoding/json/#NewEncoder
-func (p *Products) ToJSON(w io.Writer) error {
+func (p *Products) ProdsToJSON(w io.Writer) error {
+	e := json.NewEncoder(w)
+	return e.Encode(p)
+}
+
+func (p *Product) ProdToJSON(w io.Writer) error {
 	e := json.NewEncoder(w)
 	return e.Encode(p)
 }

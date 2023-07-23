@@ -39,12 +39,13 @@ func main() {
 
 	get := sm.Methods("GET").Subrouter()
 	get.HandleFunc("/products", ph.GetProducts)
+	get.HandleFunc("/products/{id:[0-9]+}", ph.GetProduct)
 
 	delete := sm.Methods("DELETE").Subrouter()
-	delete.HandleFunc("/products/{id:[0-9]+}", ph.DeleteProducts)
+	delete.HandleFunc("/products/{id:[0-9]+}", ph.DeleteProduct)
 
 	put := sm.Methods("PUT").Subrouter()
-	put.HandleFunc("/products/{id:[0-9]+}", ph.UpdateProducts)
+	put.HandleFunc("/products/{id:[0-9]+}", ph.UpdateProduct)
 	// the handler func (ph.UpdateProducts) will only be envoked if the middleware passes
 	put.Use(ph.MiddlewareProductValidation)
 
