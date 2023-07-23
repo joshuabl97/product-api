@@ -21,7 +21,7 @@ func main() {
 	loc, err := time.LoadLocation("Etc/Greenwich")
 	if err != nil {
 		l.Error().Msg("Couldn't determine timezone, using local machine time")
-	} else {
+	} else if err == nil {
 		time.Local = loc
 	}
 
