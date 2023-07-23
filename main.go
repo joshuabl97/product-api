@@ -17,6 +17,13 @@ func main() {
 
 	// instantiate logger
 	l := zerolog.New(os.Stderr).With().Timestamp().Logger()
+	// setting timezone
+	loc, err := time.LoadLocation("Etc/Greenwich")
+	if err != nil {
+		l.Error().Msg("Couldn't determine timezone, using local machine time")
+	}
+	time.Local = loc
+
 	l = l.Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.RFC3339})
 
 	// create a custom logger that wraps the zerolog logger and implements http.Logger interface.
@@ -72,7 +79,7 @@ func main() {
 
 	// this timeoutContext allows the server 30 seconds to complete all requests (if any) before shutting down
 	timeoutCtx, _ := context.WithTimeout(context.Background(), 30*time.Second)
-	err := s.Shutdown(timeoutCtx)
+	err = s.Shutdown(timeoutCtx)
 	if err != nil {
 		l.Fatal().Msg("We wanted to shut down anyway")
 	}
