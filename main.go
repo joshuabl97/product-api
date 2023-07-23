@@ -19,7 +19,7 @@ func main() {
 	l := zerolog.New(os.Stderr).With().Timestamp().Logger()
 	l = l.Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.RFC3339})
 
-	// Create a custom logger that wraps the zerolog logger and implements http.Logger interface.
+	// create a custom logger that wraps the zerolog logger and implements http.Logger interface.
 	errorLog := &zerologLogger{l}
 
 	// create the handlers
@@ -78,12 +78,12 @@ func main() {
 	}
 }
 
-// Custom logger type that wraps zerolog.Logger and implements the http.Logger interface.
+// custom logger type that wraps zerolog.Logger and implements the http.Logger interface.
 type zerologLogger struct {
 	logger zerolog.Logger
 }
 
-// Implement the io.Writer interface for our custom logger.
+// implement the io.Writer interface for our custom logger.
 func (l *zerologLogger) Write(p []byte) (n int, err error) {
 	l.logger.Error().Msg(string(p))
 	return len(p), nil
