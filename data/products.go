@@ -59,6 +59,16 @@ func UpdateProduct(id int, p *Product) error {
 	return nil
 }
 
+func DeleteProduct(id int) error {
+	_, index, err := findProduct(id)
+	if err != nil {
+		return err
+	}
+
+	productList = append(productList[:index], productList[index+1:]...)
+	return nil
+}
+
 func findProduct(id int) (*Product, int, error) {
 	for i, p := range productList {
 		if p.ID == id {

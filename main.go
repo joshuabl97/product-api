@@ -25,9 +25,10 @@ func main() {
 		time.Local = loc
 	}
 
+	// make the logs look pretty
 	l = l.Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.RFC3339})
 
-	// create a custom logger that wraps the zerolog logger and implements http.Logger interface.
+	// create a custom logger that wraps the zerolog.Logger we instantiated/customized above
 	errorLog := &zerologLogger{l}
 
 	// create the handlers
@@ -38,6 +39,9 @@ func main() {
 
 	get := sm.Methods("GET").Subrouter()
 	get.HandleFunc("/products", ph.GetProducts)
+
+	delete := sm.Methods("DELETE").Subrouter()
+	delete.HandleFunc("/products/{id:[0-9]+}", ph.DeleteProducts)
 
 	put := sm.Methods("PUT").Subrouter()
 	put.HandleFunc("/products/{id:[0-9]+}", ph.UpdateProducts)
@@ -86,7 +90,7 @@ func main() {
 	}
 }
 
-// custom logger type that wraps zerolog.Logger and implements the http.Logger interface.
+// custom logger type that wraps zerolog.Logger
 type zerologLogger struct {
 	logger zerolog.Logger
 }
