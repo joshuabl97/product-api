@@ -9,7 +9,16 @@ info:
     termsOfService: there are no TOS at this moment, use at your own risk, I take no responsibility
     title: Products API
     version: 0.0.1
-paths: {}
+paths:
+    /products:
+        get:
+            description: Return a list of products from the database
+            operationId: listProducts
+            responses:
+                "200":
+                    $ref: '#/responses/productsResponse'
+            tags:
+                - products
 produces:
     - application/json
 schemes:

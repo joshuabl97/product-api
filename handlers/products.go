@@ -1,8 +1,17 @@
 package handlers
 
 import (
+	"github.com/joshuabl97/product-api/data"
 	"github.com/rs/zerolog"
 )
+
+// some message
+// swagger:response productsResponse
+type productsResponse struct {
+	// all products in the data store
+	// in: body
+	Body []data.Product
+}
 
 // Products is a http.Handler
 type Products struct {

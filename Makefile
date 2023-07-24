@@ -1,5 +1,5 @@
-swagger:
-	GO111MODULE=off swagger generate spec -o ./swagger.yaml --scan-models
+check_install: 
+	which swagger || GO111MODULE=off go get github.com/go-swagger/go-swagger
 
-get go-swagger: 
-	GO111MODULE=off go get github.com/go-swagger/go-swagger
+swagger: check_install
+	GO111MODULE=off swagger generate spec -o ./swagger.yaml --scan-models

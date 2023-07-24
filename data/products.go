@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"regexp"
-	"time"
 
 	"github.com/go-playground/validator/v10"
 )
@@ -117,8 +116,6 @@ var productList = []*Product{
 		Description: "Frothy milky coffee",
 		Price:       2.45,
 		SKU:         "abc323",
-		CreatedOn:   time.Now().UTC().String(),
-		UpdatedOn:   time.Now().UTC().String(),
 	},
 	{
 		ID:          2,
@@ -126,7 +123,5 @@ var productList = []*Product{
 		Description: "Short and strong coffee without milk",
 		Price:       1.99,
 		SKU:         "fjd34",
-		CreatedOn:   time.Now().UTC().String(),
-		UpdatedOn:   time.Now().UTC().String(),
 	},
 }
