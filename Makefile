@@ -1,5 +1,5 @@
 check_install: 
-	which swagger || GO111MODULE=off go get github.com/go-swagger/go-swagger
+	which swagger || (go get github.com/go-swagger/go-swagger && echo "you need to install swagger-codegen as well")
 
 swagger: check_install
-	GO111MODULE=off swagger generate spec -o ./swagger.yaml --scan-models
+	swagger generate spec -o ./swagger.yaml --scan-models
