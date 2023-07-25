@@ -1,6 +1,29 @@
 basePath: /products
 consumes:
     - application/json
+definitions:
+    Product:
+        description: Product defines the structure for an API product
+        properties:
+            description:
+                type: string
+                x-go-name: Description
+            id:
+                format: int64
+                type: integer
+                x-go-name: ID
+            name:
+                type: string
+                x-go-name: Name
+            price:
+                format: float
+                type: number
+                x-go-name: Price
+            sku:
+                type: string
+                x-go-name: SKU
+        type: object
+        x-go-package: github.com/joshuabl97/product-api/data
 host: localhost
 info:
     description: |-
@@ -21,6 +44,13 @@ paths:
                 - products
 produces:
     - application/json
+responses:
+    productsResponse:
+        description: some message
+        schema:
+            items:
+                $ref: '#/definitions/Product'
+            type: array
 schemes:
     - http
 swagger: "2.0"
