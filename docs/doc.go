@@ -10,7 +10,7 @@
 //
 //     Schemes: http
 //     Host: localhost
-//     BasePath: /products
+//     BasePath: /
 //     Version: 0.0.1
 //
 //     Consumes:
@@ -19,4 +19,4 @@
 //     Produces:
 //     - application/json
 // swagger:meta
-package handlers
+package docs
