@@ -8,6 +8,12 @@ import (
 	"github.com/joshuabl97/product-api/data"
 )
 
+// swagger:route DELETE /products/{id} products deleteProduct
+// Deletes a product from the data store
+// responses:
+//	200: noContent
+
+// DeleteProduct deletes a product from the database
 func (p *Products) DeleteProduct(rw http.ResponseWriter, r *http.Request) {
 	p.l.Info().Str("id", mux.Vars(r)["id"]).Msg("Handle DELETE Products")
 	vars := mux.Vars(r)

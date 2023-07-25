@@ -8,7 +8,12 @@ import (
 	"github.com/joshuabl97/product-api/data"
 )
 
-// getProducts returns the products from the data store
+// swagger:route GET /products products listProducts
+// Return a list of products from the database
+// responses:
+//	200: productsResponse
+
+// GetProducts returns the products from the data store
 func (p *Products) GetProducts(rw http.ResponseWriter, r *http.Request) {
 	p.l.Info().Msg("Handle GET Products")
 
@@ -23,6 +28,7 @@ func (p *Products) GetProducts(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// GetProduct returns a single product from the data store
 func (p *Products) GetProduct(rw http.ResponseWriter, r *http.Request) {
 	p.l.Info().Str("id", mux.Vars(r)["id"]).Msg("Handle GET Product")
 	vars := mux.Vars(r)

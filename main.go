@@ -8,9 +8,11 @@ import (
 	"os/signal"
 	"time"
 
+	redoc "github.com/go-openapi/runtime/middleware"
 	"github.com/gorilla/mux"
-	"github.com/joshuabl97/product-api/handlers"
 	"github.com/rs/zerolog"
+
+	"github.com/joshuabl97/product-api/handlers"
 )
 
 func main() {
@@ -52,6 +54,15 @@ func main() {
 	post := sm.Methods("POST").Subrouter()
 	post.HandleFunc("/products", ph.AddProduct)
 	post.Use(ph.MiddlewareProductValidation)
+
+	opts := redoc.RedocOpts{SpecURL: "/swagger.yaml"}
+	sh := redoc.Redoc(opts, nil)
+
+	// displays swagger page
+	get.Handle("/docs", sh)
+	// the middleware.Redoc handler requires access to the swagger file
+	// as defined above in the middleware.RedocOpts
+	get.Handle("/swagger.yaml", http.FileServer(http.Dir("./")))
 
 	// create a new server
 	s := http.Server{
