@@ -28,6 +28,11 @@ func (p *Products) GetProducts(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// swagger:route GET /product/{id} products listProduct
+// Return a single product from the database
+// responses:
+//	200: productResponse
+
 // GetProduct returns a single product from the data store
 func (p *Products) GetProduct(rw http.ResponseWriter, r *http.Request) {
 	p.l.Info().Str("id", mux.Vars(r)["id"]).Msg("Handle GET Product")

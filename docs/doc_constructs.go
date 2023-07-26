@@ -18,5 +18,13 @@ type productIDParameterWrapper struct {
 	ID int
 }
 
+// A single product
+// swagger:response productResponse
+type productResponseWrapper struct {
+	// The requested product information
+	// in: body
+	Body data.Product
+}
+
 // swagger:response noContent
 type noContent struct{}

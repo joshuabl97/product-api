@@ -12,6 +12,8 @@ import (
 // Deletes a product from the data store
 // responses:
 //	200: noContent
+// 400: noContent
+// 404: noContent
 
 // DeleteProduct deletes a product from the database
 func (p *Products) DeleteProduct(rw http.ResponseWriter, r *http.Request) {
