@@ -47,6 +47,15 @@ info:
     title: Products API
     version: 0.0.1
 paths:
+    /product/{id}:
+        get:
+            description: Return a single product from the database
+            operationId: listProduct
+            responses:
+                "200":
+                    $ref: '#/responses/productResponse'
+            tags:
+                - products
     /products:
         get:
             description: Return a list of products from the database
@@ -54,6 +63,70 @@ paths:
             responses:
                 "200":
                     $ref: '#/responses/productsResponse'
+            tags:
+                - products
+        post:
+            description: Adds a product to the system
+            operationId: addProduct
+            parameters:
+                - description: name of product
+                  format: string
+                  in: query
+                  name: name
+                  required: true
+                  type: string
+                - description: product description
+                  format: string
+                  in: query
+                  name: description
+                  type: string
+                - description: product description
+                  format: float32
+                  in: query
+                  name: price
+                  required: true
+                  type: object
+                - description: product sku
+                  format: string
+                  in: query
+                  name: sku
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    $ref: '#/responses/noContent'
+            tags:
+                - products
+        put:
+            description: Updates a product in the system
+            operationId: updateProduct
+            parameters:
+                - description: name of product
+                  format: string
+                  in: query
+                  name: name
+                  required: true
+                  type: string
+                - description: product description
+                  format: string
+                  in: query
+                  name: description
+                  type: string
+                - description: product description
+                  format: float32
+                  in: query
+                  name: price
+                  required: true
+                  type: object
+                - description: product sku
+                  format: string
+                  in: query
+                  name: sku
+                  required: true
+                  type: string
+            responses:
+                "200":
+                    $ref: '#/responses/noContent'
             tags:
                 - products
     /products/{id}:
@@ -70,6 +143,10 @@ paths:
             responses:
                 "200":
                     $ref: '#/responses/noContent'
+                "400":
+                    $ref: '#/responses/noContent'
+                "404":
+                    $ref: '#/responses/noContent'
             tags:
                 - products
 produces:
@@ -77,6 +154,10 @@ produces:
 responses:
     noContent:
         description: ""
+    productResponse:
+        description: A single product
+        schema:
+            $ref: '#/definitions/Product'
     productsResponse:
         description: A list of products
         schema:

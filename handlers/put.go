@@ -8,6 +8,37 @@ import (
 	"github.com/joshuabl97/product-api/data"
 )
 
+// swagger:route PUT /products products updateProduct
+// Updates a product in the system
+//     Parameters:
+//       + name: name
+//         in: query
+//         description: name of product
+//         required: true
+//         type: string
+//         format: string
+//       + name: description
+//         in: query
+//         description: product description
+//         required: false
+//         type: string
+//         format: string
+//       + name: price
+//         in: query
+//         description: product description
+//         required: true
+//         type: float
+//         format: float32
+//       + name: sku
+//         in: query
+//         description: product sku
+//         required: true
+// 		   pattern: [a-z]+-[a-z]+-[a-z]+
+//         type: string
+//         format: string
+// responses:
+//	200: noContent
+
 // handles PUT request to update a product
 // PUT requests
 func (p *Products) UpdateProduct(rw http.ResponseWriter, r *http.Request) {
