@@ -28,7 +28,7 @@ func (p *Products) GetProducts(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// swagger:route GET /product/{id} products listProduct
+// swagger:route GET /products/{id} products listProduct
 // Return a single product from the database
 // responses:
 //	200: productResponse
