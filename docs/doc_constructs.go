@@ -10,7 +10,7 @@ type productsResponsWrapper struct {
 	Body []data.Product
 }
 
-// swagger:parameters deleteProduct
+// swagger:parameters deleteProduct listProduct
 type productIDParameterWrapper struct {
 	// The id of the product to delete from the database
 	// in: path

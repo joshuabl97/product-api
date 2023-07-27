@@ -9,32 +9,21 @@ import (
 
 // swagger:route POST /products products addProduct
 // Adds a product to the system
-//     Parameters:
-//       + name: name
-//         in: query
-//         description: name of product
-//         required: true
-//         type: string
-//         format: string
-//       + name: description
-//         in: query
-//         description: product description
-//         required: false
-//         type: string
-//         format: string
-//       + name: price
-//         in: query
-//         description: product description
-//         required: true
-//         type: float
-//         format: float32
-//       + name: sku
-//         in: query
-//         description: product sku
-//         required: true
-// 		   pattern: [a-z]+-[a-z]+-[a-z]+
-//         type: string
-//         format: string
+//
+//   Consumes:
+//   - application/json
+//
+//   Produces:
+//   - application/json
+//
+//   Parameters:
+//    + name: Product
+//      in: body
+//      required: true
+// 		type: product
+//      $ref: '#/definitions/product'
+//		description: Below is the format for a product -
+//
 // responses:
 //	200: noContent
 

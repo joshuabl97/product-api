@@ -2,7 +2,7 @@ basePath: /
 consumes:
     - application/json
 definitions:
-    Product:
+    product:
         description: Product defines the structure for an API product
         properties:
             description:
@@ -37,6 +37,7 @@ definitions:
             - price
             - sku
         type: object
+        x-go-name: Product
         x-go-package: github.com/joshuabl97/product-api/data
 host: localhost
 info:
@@ -47,15 +48,6 @@ info:
     title: Products API
     version: 0.0.1
 paths:
-    /product/{id}:
-        get:
-            description: Return a single product from the database
-            operationId: listProduct
-            responses:
-                "200":
-                    $ref: '#/responses/productResponse'
-            tags:
-                - products
     /products:
         get:
             description: Return a list of products from the database
@@ -66,64 +58,21 @@ paths:
             tags:
                 - products
         post:
+            consumes:
+                - application/json
             description: Adds a product to the system
             operationId: addProduct
             parameters:
-                - description: name of product
-                  format: string
-                  in: query
-                  name: name
+                - description: Below is the format for a product -
+                  in: body
+                  name: Product
                   required: true
-                  type: string
-                - description: product description
-                  format: string
-                  in: query
-                  name: description
-                  type: string
-                - description: product description
-                  format: float32
-                  in: query
-                  name: price
-                  required: true
-                  type: object
-                - description: product sku
-                  format: string
-                  in: query
-                  name: sku
-                  required: true
-                  type: string
-            responses:
-                "200":
-                    $ref: '#/responses/noContent'
-            tags:
-                - products
-        put:
-            description: Updates a product in the system
-            operationId: updateProduct
-            parameters:
-                - description: name of product
-                  format: string
-                  in: query
-                  name: name
-                  required: true
-                  type: string
-                - description: product description
-                  format: string
-                  in: query
-                  name: description
-                  type: string
-                - description: product description
-                  format: float32
-                  in: query
-                  name: price
-                  required: true
-                  type: object
-                - description: product sku
-                  format: string
-                  in: query
-                  name: sku
-                  required: true
-                  type: string
+                  schema:
+                    $ref: '#/definitions/product'
+                    description: Below is the format for a product -
+                    type: object
+            produces:
+                - application/json
             responses:
                 "200":
                     $ref: '#/responses/noContent'
@@ -149,6 +98,43 @@ paths:
                     $ref: '#/responses/noContent'
             tags:
                 - products
+        get:
+            description: Return a single product from the database
+            operationId: listProduct
+            parameters:
+                - description: The id of the product to delete from the database
+                  format: int64
+                  in: path
+                  name: ID
+                  required: true
+                  type: integer
+            responses:
+                "200":
+                    $ref: '#/responses/productResponse'
+            tags:
+                - products
+        put:
+            description: Updates a product in the system
+            operationId: updateProduct
+            parameters:
+                - description: I
+                  in: body
+                  name: Product
+                  required: true
+                  schema:
+                    $ref: '#/definitions/product'
+                    description: I
+                    type: object
+                - description: Below is the format for a product -
+                  in: path
+                  name: product id
+                  required: true
+                  type: integer
+            responses:
+                "200":
+                    $ref: '#/responses/noContent'
+            tags:
+                - products
 produces:
     - application/json
 responses:
@@ -157,12 +143,12 @@ responses:
     productResponse:
         description: A single product
         schema:
-            $ref: '#/definitions/Product'
+            $ref: '#/definitions/product'
     productsResponse:
         description: A list of products
         schema:
             items:
-                $ref: '#/definitions/Product'
+                $ref: '#/definitions/product'
             type: array
 schemes:
     - http
