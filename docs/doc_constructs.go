@@ -4,7 +4,7 @@ import "github.com/joshuabl97/product-api/data"
 
 // A list of products
 // swagger:response productsResponse
-type productsResponsWrapper struct {
+type productsResponseWrapper struct {
 	// all products in the data store
 	// in: body
 	Body []data.Product

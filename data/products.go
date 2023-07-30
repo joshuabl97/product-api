@@ -18,13 +18,13 @@ type Product struct {
 	// min: 1
 	ID int `json:"id"` // Unique identifier for the product
 
-	// the name for this poduct
+	// the name for this product
 	//
 	// required: true
 	// max length: 255
 	Name string `json:"name" validate:"required"`
 
-	// the description for this poduct
+	// the description for this product
 	//
 	// required: false
 	// max length: 10000
@@ -50,7 +50,10 @@ func (p *Product) FromJSON(r io.Reader) error {
 
 func (p *Product) Validate() error {
 	validate := validator.New()
-	validate.RegisterValidation("sku", validateSKU)
+	err := validate.RegisterValidation("sku", validateSKU)
+	if err != nil {
+		return err
+	}
 
 	return validate.Struct(p)
 }

@@ -4,8 +4,10 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/joshuabl97/product-api/data"
+	"github.com/rs/zerolog"
 )
 
 func (p *Products) MiddlewareProductValidation(next http.Handler) http.Handler {
@@ -40,5 +42,23 @@ func (p *Products) MiddlewareProductValidation(next http.Handler) http.Handler {
 		req := r.WithContext(ctx)
 
 		next.ServeHTTP(rw, req)
+	})
+}
+
+// LoggingMiddleware logs information about incoming requests
+func LoggingMiddleware(next http.Handler, logger *zerolog.Logger) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+
+		// Logging the request details
+		logger.Info().
+			Str("method", r.Method).
+			Str("path", r.URL.Path).
+			Str("remote_addr", r.RemoteAddr).
+			Dur("duration", time.Since(start)).
+			Msg("request handled")
+
+		// Call the next handler in the chain
+		next.ServeHTTP(w, r)
 	})
 }

@@ -43,8 +43,8 @@ func main() {
 	get.HandleFunc("/products", ph.GetProducts)
 	get.HandleFunc("/products/{id:[0-9]+}", ph.GetProduct)
 
-	delete := sm.Methods("DELETE").Subrouter()
-	delete.HandleFunc("/products/{id:[0-9]+}", ph.DeleteProduct)
+	del := sm.Methods("DELETE").Subrouter()
+	del.HandleFunc("/products/{id:[0-9]+}", ph.DeleteProduct)
 
 	put := sm.Methods("PUT").Subrouter()
 	put.HandleFunc("/products/{id:[0-9]+}", ph.UpdateProduct)
@@ -59,10 +59,10 @@ func main() {
 	sh := redoc.Redoc(opts, nil)
 
 	// displays swagger page
-	get.Handle("/docs", sh)
+	get.Handle("/docs", handlers.LoggingMiddleware(sh, &l))
 	// the middleware.Redoc handler requires access to the swagger file
 	// as defined above in the middleware.RedocOpts
-	get.Handle("/swagger.yaml", http.FileServer(http.Dir("./")))
+	get.Handle("/swagger.yaml", handlers.LoggingMiddleware(http.FileServer(http.Dir("./")), &l))
 
 	// create a new server
 	s := http.Server{
@@ -89,7 +89,7 @@ func main() {
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, os.Interrupt)
 
-	// does not envoke 'graceful shutdown' unless the signalChannel is closed
+	// does not invoke 'graceful shutdown' unless the signalChannel is closed
 	<-sigChan
 
 	l.Info().Msg("Received terminate, graceful shutdown")
