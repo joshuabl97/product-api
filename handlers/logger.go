@@ -1,9 +1,10 @@
 package handlers
 
 import (
-	"github.com/rs/zerolog"
 	"net/http"
 	"time"
+
+	"github.com/rs/zerolog"
 )
 
 // HandlerLogger logs information about incoming requests
