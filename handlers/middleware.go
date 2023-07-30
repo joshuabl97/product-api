@@ -3,9 +3,8 @@ package handlers
 import (
 	"context"
 	"fmt"
-	"net/http"
-
 	"github.com/joshuabl97/product-api/data"
+	"net/http"
 )
 
 func (p *Products) MiddlewareProductValidation(next http.Handler) http.Handler {

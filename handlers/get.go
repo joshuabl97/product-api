@@ -6,6 +6,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/joshuabl97/product-api/data"
+	// library for serving swagger.yaml file
 )
 
 // swagger:route GET /products products listProducts
