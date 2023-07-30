@@ -40,29 +40,29 @@ func main() {
 	sm := mux.NewRouter()
 
 	get := sm.Methods("GET").Subrouter()
-	get.HandleFunc("/products", ph.GetProducts)
-	get.HandleFunc("/products/{id:[0-9]+}", ph.GetProduct)
+	get.HandleFunc("/products", handlers.LoggingMiddleware(ph.GetProducts, &l))
+	get.HandleFunc("/products/{id:[0-9]+}", handlers.LoggingMiddleware(ph.GetProduct, &l))
 
 	del := sm.Methods("DELETE").Subrouter()
-	del.HandleFunc("/products/{id:[0-9]+}", ph.DeleteProduct)
+	del.HandleFunc("/products/{id:[0-9]+}", handlers.LoggingMiddleware(ph.DeleteProduct, &l))
 
 	put := sm.Methods("PUT").Subrouter()
-	put.HandleFunc("/products/{id:[0-9]+}", ph.UpdateProduct)
-	// the handler func (ph.UpdateProducts) will only be envoked if the middleware passes
+	put.HandleFunc("/products/{id:[0-9]+}", handlers.LoggingMiddleware(ph.UpdateProduct, &l))
+	// the handler func (ph.UpdateProducts) will only be invoked if the middleware passes
 	put.Use(ph.MiddlewareProductValidation)
 
 	post := sm.Methods("POST").Subrouter()
-	post.HandleFunc("/products", ph.AddProduct)
+	post.HandleFunc("/products", handlers.LoggingMiddleware(ph.AddProduct, &l))
 	post.Use(ph.MiddlewareProductValidation)
 
 	opts := redoc.RedocOpts{SpecURL: "/swagger.yaml"}
 	sh := redoc.Redoc(opts, nil)
 
 	// displays swagger page
-	get.Handle("/docs", handlers.LoggingMiddleware(sh, &l))
+	get.Handle("/docs", handlers.HandlerLogger(sh, &l))
 	// the middleware.Redoc handler requires access to the swagger file
 	// as defined above in the middleware.RedocOpts
-	get.Handle("/swagger.yaml", handlers.LoggingMiddleware(http.FileServer(http.Dir("./")), &l))
+	get.Handle("/swagger.yaml", handlers.HandlerLogger(http.FileServer(http.Dir("./")), &l))
 
 	// create a new server
 	s := http.Server{
